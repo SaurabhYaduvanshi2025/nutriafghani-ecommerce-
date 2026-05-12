@@ -4,7 +4,7 @@
 .env
 #Database connection files
 config/database.php
-configg/db.php
+config/db.php
 #Uploads folders
 uploads/
 #Logs
@@ -15,5 +15,7 @@ uploads/
  node_modules/
  #vendor folder(if composer is used)
  vendor/
- #admin
+ #Admin
 admin/
+#Configg folder
+configg/
