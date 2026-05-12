@@ -60,12 +60,12 @@ require_customer_login('cart.php');
                 <div class="row">
                     <div class="col-xl-8">
                         <form id="cart-form">
-                            <table class="tf-table-page-cart">
+                            <table class="tf-table-page-cart nutria-cart-table">
                                 <thead>
                                     <tr>
                                         <th>Products</th>
                                         <th>Quantity</th>
-                                        <th>Total Price</th>
+                                        <th>Price</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -137,7 +137,6 @@ require_customer_login('cart.php');
                             <div class="box-order bg-surface">
                                 <h5 class="title">Order Summary</h5>
                                 <div class="order-summary-items" id="order-summary-items">
-                                    <!-- Order summary items will be populated here -->
                                 </div>
                                 <div class="line-bt"></div>
                                 <h5 class="total-order d-flex justify-content-between align-items-center">
@@ -260,6 +259,7 @@ require_customer_login('cart.php');
                         <div class="cart-info">
                             <a href="product-detail.php?slug=${encodeURIComponent(item.product_slug)}" class="cart-title link">${item.product_name}</a>
                             ${item.weight_label ? `<div class="variant-box">${item.weight_label}</div>` : ''}
+                            <div class="cart-unit-price">Rs. ${item.price.toFixed(2)} each</div>
                         </div>
                     </td>
                     <td data-cart-title="Quantity" class="tf-cart-item_quantity">
@@ -269,8 +269,11 @@ require_customer_login('cart.php');
                             <span class="btn-quantity btn-increase" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</span>
                         </div>
                     </td>
-                    <td data-cart-title="Total" class="tf-cart-item_total text-center">
-                        <div class="cart-total text-button total-price">Rs. ${item.total.toFixed(2)}</div>
+                    <td data-cart-title="Price" class="tf-cart-item_total">
+                        <div class="cart-price-block">
+                            <span class="cart-price-label">Subtotal</span>
+                            <span class="cart-total text-button total-price">Rs. ${item.total.toFixed(2)}</span>
+                        </div>
                     </td>
                     <td data-cart-title="Remove" class="remove-cart">
                         <span class="remove icon icon-close" onclick="removeItem(${item.id})"></span>

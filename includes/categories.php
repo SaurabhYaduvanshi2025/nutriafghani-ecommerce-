@@ -16,6 +16,19 @@ $categories = [];
 if ($result = $conn->query($categoriesQuery)) {
     $categories = $result->fetch_all(MYSQLI_ASSOC);
 }
+
+function category_image_path($path)
+{
+    if (empty($path)) {
+        return 'images/pista_demp.jpg';
+    }
+
+    if (preg_match('/^https?:\/\//i', $path)) {
+        return $path;
+    }
+
+    return 'admin/' . ltrim($path, '/');
+}
 ?>
 <section class="flat-spacing-2 pb_0">
     <div class="container">
@@ -46,8 +59,8 @@ if ($result = $conn->query($categoriesQuery)) {
                                     <a href="shop.php?category=<?php echo urlencode($category['slug']); ?>" class="img-style">
                                         <img
                                             class="lazyload"
-                                            data-src="images/<?php echo htmlspecialchars($category['image']); ?>"
-                                            src="images/<?php echo htmlspecialchars($category['image']); ?>"
+                                            data-src="<?php echo htmlspecialchars(category_image_path($category['image'])); ?>"
+                                            src="<?php echo htmlspecialchars(category_image_path($category['image'])); ?>"
                                             alt="<?php echo htmlspecialchars($category['name']); ?>"
                                         />
                                     </a>

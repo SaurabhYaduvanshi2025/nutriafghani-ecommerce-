@@ -2,6 +2,19 @@
 // Fetch featured/bestseller products from database
 require_once(__DIR__ . '/../config/db.php');
 
+function product_image_path($path)
+{
+    if (empty($path)) {
+        return 'images/pista_demp.jpg';
+    }
+
+    if (preg_match('/^https?:\/\//i', $path)) {
+        return $path;
+    }
+
+    return 'uploads/' . ltrim($path, '/');
+}
+
 $productsQuery = "
     SELECT p.id, p.name, p.slug, p.short_description, p.original_price, p.discount_price,
            p.main_image, p.gallery_image_1, p.gallery_image_2, p.gallery_image_3, p.stock_quantity, p.is_featured,
@@ -43,26 +56,26 @@ if ($result = $conn->query($productsQuery)) {
                                 <a href="product-detail.php?slug=<?php echo urlencode($product['slug']); ?>" class="product-img">
                                     <img
                                         class="lazyload img-product"
-                                        data-src="images/products/<?php echo htmlspecialchars($product['main_image']); ?>"
-                                        src="images/products/<?php echo htmlspecialchars($product['main_image']); ?>"
+                                        data-src="<?php echo htmlspecialchars(product_image_path($product['main_image'])); ?>"
+                                        src="<?php echo htmlspecialchars(product_image_path($product['main_image'])); ?>"
                                         alt="<?php echo htmlspecialchars($product['name']); ?>" />
                                     <img
                                         class="lazyload img-hover"
-                                        data-src="images/products/<?php echo htmlspecialchars($product['gallery_image_1'] ?: $product['main_image']); ?>"
-                                        src="images/products/<?php echo htmlspecialchars($product['gallery_image_1'] ?: $product['main_image']); ?>"
+                                        data-src="<?php echo htmlspecialchars(product_image_path($product['gallery_image_1'] ?: $product['main_image'])); ?>"
+                                        src="<?php echo htmlspecialchars(product_image_path($product['gallery_image_1'] ?: $product['main_image'])); ?>"
                                         alt="<?php echo htmlspecialchars($product['name']); ?>" />
                                     <?php if ($product['gallery_image_2']): ?>
                                         <img
                                             class="lazyload img-hover"
-                                            data-src="images/products/<?php echo htmlspecialchars($product['gallery_image_2']); ?>"
-                                            src="images/products/<?php echo htmlspecialchars($product['gallery_image_2']); ?>"
+                                            data-src="<?php echo htmlspecialchars(product_image_path($product['gallery_image_2'])); ?>"
+                                            src="<?php echo htmlspecialchars(product_image_path($product['gallery_image_2'])); ?>"
                                             alt="<?php echo htmlspecialchars($product['name']); ?>" />
                                     <?php endif; ?>
                                     <?php if ($product['gallery_image_3']): ?>
                                         <img
                                             class="lazyload img-hover"
-                                            data-src="images/products/<?php echo htmlspecialchars($product['gallery_image_3']); ?>"
-                                            src="images/products/<?php echo htmlspecialchars($product['gallery_image_3']); ?>"
+                                            data-src="<?php echo htmlspecialchars(product_image_path($product['gallery_image_3'])); ?>"
+                                            src="<?php echo htmlspecialchars(product_image_path($product['gallery_image_3'])); ?>"
                                             alt="<?php echo htmlspecialchars($product['name']); ?>" />
                                     <?php endif; ?>
                                 </a>

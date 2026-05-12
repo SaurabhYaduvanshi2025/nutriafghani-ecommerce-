@@ -12179,6 +12179,110 @@ html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
   color: var(--white);
 }
 
+.nutria-cart-table th:nth-child(2),
+.nutria-cart-table th:nth-child(3),
+.nutria-cart-table td.tf-cart-item_quantity,
+.nutria-cart-table td.tf-cart-item_total {
+  width: 150px;
+}
+
+.nutria-cart-table .tf-cart-item_product {
+  min-width: 0;
+}
+
+.nutria-cart-table .tf-cart-item_product .img-box {
+  width: 112px;
+  height: 112px;
+  margin-right: 20px;
+  flex: 0 0 112px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background-color: var(--surface);
+}
+
+.nutria-cart-table .tf-cart-item_product .cart-info {
+  min-width: 0;
+  gap: 8px;
+}
+
+.nutria-cart-table .tf-cart-item_product .cart-title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-weight: 600;
+}
+
+.nutria-cart-table .tf-cart-item_product .variant-box,
+.nutria-cart-table .cart-unit-price {
+  display: inline-flex;
+  width: max-content;
+  max-width: 100%;
+  color: var(--secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.nutria-cart-table .cart-price-block {
+  display: grid;
+  gap: 4px;
+  justify-items: end;
+  text-align: right;
+}
+
+.nutria-cart-table .cart-price-label {
+  color: var(--secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.nutria-cart-table .total-price {
+  color: var(--main);
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.modal-shopping-cart .tf-mini-cart-item {
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.modal-shopping-cart .tf-mini-cart-item .tf-mini-cart-image {
+  width: 92px;
+  height: 92px;
+  border: 1px solid var(--line);
+  background-color: var(--surface);
+}
+
+.modal-shopping-cart .tf-mini-cart-item .tf-mini-cart-image img {
+  height: 100%;
+}
+
+.modal-shopping-cart .tf-mini-cart-info {
+  min-width: 0;
+}
+
+.modal-shopping-cart .tf-mini-cart-info > .d-flex:nth-child(2),
+.modal-shopping-cart .tf-mini-cart-info > .d-flex:nth-child(3) {
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.modal-shopping-cart .tf-mini-cart-info > .d-flex:nth-child(2) {
+  margin-bottom: 8px;
+}
+
+.modal-shopping-cart .tf-mini-cart-info > .d-flex:nth-child(2) .text-button,
+.modal-shopping-cart .tf-mini-cart-info > .d-flex:nth-child(3) .text-title {
+  color: var(--main);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .ip-discount-code {
   position: relative;
 }
@@ -17221,6 +17325,10 @@ ul.list-text.type-number {
     padding: 12px 0;
     gap: 12px;
   }
+  .modal-shopping-cart .tf-mini-cart-item .tf-mini-cart-image {
+    width: 76px;
+    height: 76px;
+  }
   .modal-shopping-cart .tf-mini-cart-item .tf-mini-cart-info > div {
     gap: 6px;
     margin-bottom: 6px;
@@ -17409,6 +17517,34 @@ ul.list-text.type-number {
     border-bottom: none;
     width: 80px;
     max-height: 110px;
+  }
+  .nutria-cart-table .tf-cart-item {
+    padding-left: 102px;
+  }
+  .nutria-cart-table .tf-cart-item_product .img-box {
+    width: 86px;
+    height: 86px;
+    max-height: none;
+    margin-right: 0;
+    flex-basis: 86px;
+  }
+  .nutria-cart-table .tf-cart-item_product .cart-info {
+    padding-right: 8px;
+  }
+  .nutria-cart-table .tf-cart-item_product .cart-title {
+    -webkit-line-clamp: 2;
+  }
+  .nutria-cart-table td.tf-cart-item_quantity,
+  .nutria-cart-table td.tf-cart-item_total {
+    width: 100%;
+  }
+  .nutria-cart-table .cart-price-block {
+    margin-left: auto;
+    justify-items: end;
+  }
+  .nutria-cart-table .total-price {
+    font-size: 16px;
+    line-height: 22px;
   }
   .tf-table-page-cart .tf-cart-item td[data-cart-title]:before {
     content: attr(data-cart-title);

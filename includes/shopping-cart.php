@@ -102,7 +102,7 @@
                                     <?php endif; ?>
                             </div>
                         </div>
-                        <div class="tf-mini-cart-bottom">
+                        <!-- <div class="tf-mini-cart-bottom">
                             <div class="tf-mini-cart-tool">
                                 <div class="tf-mini-cart-tool-btn btn-add-note">
                                     <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -156,7 +156,7 @@
                                     <a class="link text-btn-uppercase" href="shop.php">Or continue shopping</a>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="tf-mini-cart-tool-openable add-note">
                             <div class="tf-mini-cart-tool-content">
                                 <label for="Cart-note" class="tf-mini-cart-tool-text">
