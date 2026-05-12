@@ -1,0 +1,19 @@
+# Database Files
+*.sql
+#Environment Files
+.env
+#Database connection files
+config/database.php
+configg/db.php
+#Uploads folders
+uploads/
+#Logs
+ *.log
+ #Vs Code settings
+ .vscode/
+ #Node modules
+ node_modules/
+ #vendor folder(if composer is used)
+ vendor/
+ #admin
+admin/
