@@ -3,6 +3,24 @@ require_once(__DIR__ . '/../includes/customer-auth.php');
 $isLoggedIn = is_customer_logged_in();
 $customerName = isset($_SESSION['customer_first_name']) ? htmlspecialchars($_SESSION['customer_first_name']) : '';
 $customerEmail = isset($_SESSION['customer_email']) ? htmlspecialchars($_SESSION['customer_email']) : '';
+$cartCount = 0;
+
+if ($isLoggedIn) {
+    $customerId = get_customer_id();
+    if ($customerId) {
+        $cartCountStmt = $conn->prepare("SELECT COUNT(*) AS count FROM cart_items WHERE customer_id = ?");
+        if ($cartCountStmt) {
+            $cartCountStmt->bind_param("i", $customerId);
+            $cartCountStmt->execute();
+            $cartCountResult = $cartCountStmt->get_result();
+            if ($cartCountResult) {
+                $cartCountRow = $cartCountResult->fetch_assoc();
+                $cartCount = intval($cartCountRow['count'] ?? 0);
+            }
+            $cartCountStmt->close();
+        }
+    }
+}
 ?>
 <header id="header" class="header-default header-style-4">
     <div class="tf-topbar topbar-white bg-main">
@@ -256,7 +274,7 @@ $customerEmail = isset($_SESSION['customer_email']) ? htmlspecialchars($_SESSION
                                             stroke-linecap="round"
                                             stroke-linejoin="round" />
                                     </svg>
-                                    <span class="count-box">1</span></a>
+                                    <span class="count-box" id="cart-count-box"><?php echo $cartCount; ?></span></a>
                             </li>
                         </ul>
                     </div>

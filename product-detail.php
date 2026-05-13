@@ -679,6 +679,12 @@ $shortDescription = trim((string) ($product['short_description'] ?? ''));
             .then(data => {
                 if (data.success) {
                     alert(data.message || 'Product added to cart successfully!');
+                    if (data.cart_count !== undefined) {
+                        const cartCountBox = document.getElementById('cart-count-box') || document.querySelector('.nav-cart .count-box');
+                        if (cartCountBox) {
+                            cartCountBox.textContent = data.cart_count;
+                        }
+                    }
                     window.location.href = 'cart.php';
                 } else {
                     alert('Error: ' + (data.message || 'Failed to add product to cart'));

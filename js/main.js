@@ -421,10 +421,10 @@
                 rect.top >= 0 &&
                 rect.left >= 0 &&
                 rect.bottom <=
-                    (window.innerHeight ||
-                        document.documentElement.clientHeight) &&
+                (window.innerHeight ||
+                    document.documentElement.clientHeight) &&
                 rect.right <=
-                    (window.innerWidth || document.documentElement.clientWidth)
+                (window.innerWidth || document.documentElement.clientWidth)
             );
         }
         $(window).on("scroll", onScroll);
@@ -477,6 +477,32 @@
         $(".tf-mini-cart-tool-close").click(function () {
             $(".tf-mini-cart-tool-openable").removeClass("open");
         });
+    };
+
+    var updateCartCount = function (count) {
+        var countBox = document.querySelector('.nav-cart .count-box');
+        if (countBox) {
+            countBox.textContent = count;
+        }
+    };
+
+    var refreshCartCount = function () {
+        if (!document.querySelector('.nav-cart .count-box')) {
+            return;
+        }
+
+        fetch('cart-process.php')
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                if (data && data.success && typeof data.cart_count !== 'undefined') {
+                    updateCartCount(data.cart_count);
+                }
+            })
+            .catch(function (error) {
+                console.error('Unable to refresh cart count:', error);
+            });
     };
 
     /* Header Sticky
@@ -628,9 +654,9 @@
                     .find(".price-on-sale")
                     .text(
                         "₹" +
-                            newPrice
-                                .toFixed(2)
-                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        newPrice
+                            .toFixed(2)
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                     );
                 updateTotalPrice(newPrice, productItem);
             });
@@ -661,9 +687,9 @@
                     .find(".total-price")
                     .text(
                         "₹" +
-                            totalPrice
-                                .toFixed(2)
-                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        totalPrice
+                            .toFixed(2)
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                     );
             }
         });
@@ -1315,6 +1341,7 @@
         loadItem();
         staggerWrap();
         clickModalSecond();
+        refreshCartCount();
         headerSticky();
         autoPopup();
         clickControl();

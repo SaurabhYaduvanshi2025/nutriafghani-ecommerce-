@@ -78,7 +78,7 @@ require_customer_login('cart.php');
                                 <p>Add some products to your cart to continue shopping.</p>
                                 <a href="collection.php" class="tf-button style-1">Continue Shopping</a>
                             </div>
-                        </form>
+                        <!-- </form>
                             <div class="ip-discount-code">
                                 <input type="text" placeholder="Add voucher discount">
                                 <button class="tf-btn"><span class="text">Apply Code</span></button>
@@ -130,7 +130,7 @@ require_customer_login('cart.php');
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        </form> -->
                     </div>
                     <div class="col-xl-4">
                         <div class="fl-sidebar-cart">
