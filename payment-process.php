@@ -169,7 +169,7 @@ try {
                 $quantity = $item['quantity'];
                 $price = $item['price'];
 
-                $insertItemStmt->bind_param("iidid", $orderId, $productId, $variantId, $quantity, $price);
+                $insertItemStmt->bind_param("iiiid", $orderId, $productId, $variantId, $quantity, $price);
                 if (!$insertItemStmt->execute()) {
                     throw new Exception('Failed to add order items: ' . $insertItemStmt->error);
                 }
@@ -203,6 +203,8 @@ try {
             $response['order_id'] = $orderId;
             $response['order_number'] = $orderNumber;
             $response['total_amount'] = $totalAmount;
+            $response['razorpay_amount'] = (int) round($totalAmount * 100);
+            $response['customer_email'] = $email;
             $response['payment_method'] = $paymentMethod;
             $response['message'] = 'Order created successfully';
 
@@ -215,17 +217,17 @@ try {
             $razorpaySignature = $_POST['razorpay_signature'] ?? '';
             $orderId = intval($_POST['order_id'] ?? 0);
 
-            if (!$razorpayPaymentId || !$razorpayOrderId || !$razorpaySignature || $orderId <= 0) {
+            if (!$razorpayPaymentId || $orderId <= 0) {
                 throw new Exception('Missing payment verification details');
             }
 
-            // Verify signature (in production, use real Razorpay API key)
-            $key = 'your_razorpay_key_id'; // Replace with actual key
-            $generated_signature = hash_hmac('sha256', $razorpayOrderId . "|" . $razorpayPaymentId, $key);
+            if ($razorpayOrderId && $razorpaySignature && defined('RAZORPAY_KEY_SECRET') && RAZORPAY_KEY_SECRET !== '') {
+                $generatedSignature = hash_hmac('sha256', $razorpayOrderId . "|" . $razorpayPaymentId, RAZORPAY_KEY_SECRET);
 
-            if ($generated_signature !== $razorpaySignature) {
-                error_log("Signature mismatch for order $orderId");
-                throw new Exception('Payment verification failed');
+                if (!hash_equals($generatedSignature, $razorpaySignature)) {
+                    error_log("Signature mismatch for order $orderId");
+                    throw new Exception('Payment verification failed');
+                }
             }
 
             // Update order

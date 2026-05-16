@@ -1,9 +1,16 @@
 <?php
 require_once('includes/customer-auth.php');
 
+$requestedRedirect = $_GET['redirect'] ?? '';
+if (is_safe_customer_redirect($requestedRedirect)) {
+    $_SESSION['redirect_after_login'] = $requestedRedirect;
+}
+
 // If already logged in, redirect to home
 if (is_customer_logged_in()) {
-    header('Location: index.php');
+    $redirect = $_SESSION['redirect_after_login'] ?? 'index.php';
+    unset($_SESSION['redirect_after_login']);
+    header('Location: ' . (is_safe_customer_redirect($redirect) ? $redirect : 'index.php'));
     exit();
 }
 
@@ -24,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_submit'])) {
         $redirect = $_SESSION['redirect_after_login'] ?? 'index.php';
         unset($_SESSION['redirect_after_login']);
         
-        header('Location: ' . $redirect);
+        header('Location: ' . (is_safe_customer_redirect($redirect) ? $redirect : 'index.php'));
         exit();
     } else {
         $login_error = $result['message'];

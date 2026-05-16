@@ -60,6 +60,41 @@ function get_customer_name()
 }
 
 /**
+ * Check if the current request expects a JSON response.
+ * @return bool
+ */
+function is_customer_ajax_request()
+{
+    $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
+    $requestedWith = $_SERVER['HTTP_X_REQUESTED_WITH'] ?? '';
+
+    return strtolower($requestedWith) === 'xmlhttprequest'
+        || stripos($accept, 'application/json') !== false
+        || basename(parse_url($_SERVER['SCRIPT_NAME'] ?? '', PHP_URL_PATH)) === 'cart-process.php';
+}
+
+/**
+ * Keep post-login redirects inside normal site pages.
+ * @param string $redirect
+ * @return bool
+ */
+function is_safe_customer_redirect($redirect)
+{
+    if (empty($redirect)) {
+        return false;
+    }
+
+    if (preg_match('/^https?:\/\//i', $redirect) || strpos($redirect, '//') === 0) {
+        return false;
+    }
+
+    $path = parse_url($redirect, PHP_URL_PATH) ?: '';
+    $blockedPages = ['cart-process.php', 'checkout-process.php', 'payment-process.php'];
+
+    return !in_array(basename($path), $blockedPages, true);
+}
+
+/**
  * Login a customer
  * @param string $email Customer email
  * @param string $password Customer password (plain text)
@@ -259,7 +294,19 @@ function logout_customer()
 function require_customer_login($redirect_to = '')
 {
     if (!is_customer_logged_in()) {
-        $_SESSION['redirect_after_login'] = $redirect_to ?: $_SERVER['REQUEST_URI'];
+        if (is_customer_ajax_request()) {
+            header('Content-Type: application/json');
+            http_response_code(401);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Customer login required',
+                'cart_count' => 0
+            ]);
+            exit();
+        }
+
+        $redirect = $redirect_to ?: ($_SERVER['REQUEST_URI'] ?? 'index.php');
+        $_SESSION['redirect_after_login'] = is_safe_customer_redirect($redirect) ? $redirect : 'index.php';
         header('Location: customer-login.php');
         exit();
     }

@@ -192,7 +192,7 @@ try {
                     // Insert new cart item
                     $insertQuery = "INSERT INTO cart_items (customer_id, product_id, variant_id, quantity, price) VALUES (?, ?, ?, ?, ?)";
                     $insertStmt = $conn->prepare($insertQuery);
-                    $insertStmt->bind_param("iiidi", $customerId, $productId, $variantId, $quantity, $price);
+                    $insertStmt->bind_param("iiiid", $customerId, $productId, $variantId, $quantity, $price);
                     $insertStmt->execute();
 
                     $response['message'] = 'Product added to cart successfully';

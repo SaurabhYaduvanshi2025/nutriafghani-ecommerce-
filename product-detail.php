@@ -314,7 +314,7 @@ $shortDescription = trim((string) ($product['short_description'] ?? ''));
                                             <div class="tf-product-info-by-btn mb_10">
                                                 <button 
                                                     onclick="checkLoginAndAddToCart(event)" 
-                                                    class="btn-style-2 flex-grow-1 text-btn-uppercase fw-6 show-shopping-cart"
+                                                    class="btn-style-2 flex-grow-1 text-btn-uppercase fw-6"
                                                 >
                                                     <span>Add to cart -&nbsp;</span><span class="tf-qty-price total-price" id="product-total-price"><?php echo format_price($currentDiscountPrice); ?></span>
                                                 </button>
@@ -327,7 +327,7 @@ $shortDescription = trim((string) ($product['short_description'] ?? ''));
                                             </div>
                                             <button 
                                                 onclick="checkLoginAndBuyNow(event)" 
-                                                class="btn-style-3 text-btn-uppercase"
+                                                class="btn-style-3 text-btn-uppercase w-100"
                                             >
                                                 Buy it now
                                             </button>
@@ -636,24 +636,40 @@ $shortDescription = trim((string) ($product['short_description'] ?? ''));
         });
 
         // Customer login check functions
+        function getSelectedCartPayload() {
+            const selectedVariant = document.querySelector('input[name="product_variant"]:checked');
+            const variantId = selectedVariant ? selectedVariant.value : null;
+            const quantityInput = document.querySelector('.quantity-product');
+            const quantity = quantityInput ? parseInt(quantityInput.value, 10) || 1 : 1;
+
+            const formData = new FormData();
+            formData.append('action', 'add');
+            formData.append('product_id', '<?php echo (int) $product['id']; ?>');
+            if (variantId && variantId !== '0') {
+                formData.append('variant_id', variantId);
+            }
+            formData.append('quantity', quantity);
+
+            return formData;
+        }
+
+        function addCurrentProductToCart() {
+            return fetch('cart-process.php', {
+                method: 'POST',
+                body: getSelectedCartPayload()
+            }).then(response => response.json());
+        }
+
         function checkLoginAndAddToCart(event) {
             event.preventDefault();
             const isLoggedIn = <?php echo json_encode(is_customer_logged_in()); ?>;
             
             if (!isLoggedIn) {
                 if (confirm('You need to be logged in to add items to your cart. Would you like to login now?')) {
-                    window.location.href = 'customer-login.php?redirect=product-detail.php?slug=<?php echo isset($_GET['slug']) ? urlencode($_GET['slug']) : ''; ?>';
+                    window.location.href = 'customer-login.php?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
                 }
                 return;
             }
-
-            // Get selected variant
-            const selectedVariant = document.querySelector('input[name="product_variant"]:checked');
-            const variantId = selectedVariant ? selectedVariant.value : null;
-
-            // Get quantity
-            const quantityInput = document.querySelector('.quantity-product');
-            const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
 
             // Show loading
             const button = event.target.closest('button');
@@ -661,21 +677,7 @@ $shortDescription = trim((string) ($product['short_description'] ?? ''));
             button.innerHTML = '<span>Adding...</span>';
             button.disabled = true;
 
-            // Prepare form data
-            const formData = new FormData();
-            formData.append('action', 'add');
-            formData.append('product_id', '<?php echo $product['id']; ?>');
-            if (variantId) {
-                formData.append('variant_id', variantId);
-            }
-            formData.append('quantity', quantity);
-
-            // Send request
-            fetch('cart-process.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
+            addCurrentProductToCart()
             .then(data => {
                 if (data.success) {
                     alert(data.message || 'Product added to cart successfully!');
@@ -707,12 +709,32 @@ $shortDescription = trim((string) ($product['short_description'] ?? ''));
             
             if (!isLoggedIn) {
                 if (confirm('You need to be logged in to make a purchase. Would you like to login now?')) {
-                    window.location.href = 'customer-login.php?redirect=checkout.php';
+                    window.location.href = 'customer-login.php?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
                 }
-            } else {
-                // Redirect to checkout page
-                window.location.href = 'checkout.php';
+                return;
             }
+
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = 'Processing...';
+            button.disabled = true;
+
+            addCurrentProductToCart()
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = 'checkout.php';
+                    } else {
+                        alert('Error: ' + (data.message || 'Failed to add product to cart'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while preparing checkout');
+                })
+                .finally(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                });
         }
     </script>
 </body>
