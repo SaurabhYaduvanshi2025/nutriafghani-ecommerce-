@@ -10,7 +10,7 @@ if ($slug === '') {
     exit;
 }
 
-$stmt = $conn->prepare('SELECT id, title, slug, image, content, created_at FROM blogs WHERE slug = ? LIMIT 1');
+$stmt = $conn->prepare('SELECT id, title, slug, image, meta_title, meta_description, meta_keywords, content, created_at FROM blogs WHERE slug = ? LIMIT 1');
 $stmt->bind_param('s', $slug);
 $stmt->execute();
 $blog = $stmt->get_result()->fetch_assoc();
@@ -19,14 +19,27 @@ $stmt->close();
 if (!$blog) {
     http_response_code(404);
 }
+
+$pageTitle = 'Blog Not Found - Nutri Afghan';
+$pageDescription = 'Blog post not found.';
+$pageKeywords = '';
+
+if ($blog) {
+    $pageTitle = trim($blog['meta_title'] ?? '') !== '' ? $blog['meta_title'] : $blog['title'] . ' - Nutri Afghan';
+    $pageDescription = trim($blog['meta_description'] ?? '') !== '' ? $blog['meta_description'] : blog_excerpt($blog['content'], 150);
+    $pageKeywords = trim($blog['meta_keywords'] ?? '');
+}
 ?>
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title><?php echo $blog ? blog_e($blog['title']) . ' - Nutri Afghan' : 'Blog Not Found - Nutri Afghan'; ?></title>
+    <title><?php echo blog_e($pageTitle); ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="<?php echo $blog ? blog_e(blog_excerpt($blog['content'], 150)) : 'Blog post not found.'; ?>">
+    <meta name="description" content="<?php echo blog_e($pageDescription); ?>">
+    <?php if ($pageKeywords !== ''): ?>
+        <meta name="keywords" content="<?php echo blog_e($pageKeywords); ?>">
+    <?php endif; ?>
     <?php include_once('includes/header-link.php'); ?>
     <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.7/quill.snow.css">
     <link rel="stylesheet" href="css/blog.css">

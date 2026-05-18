@@ -94,6 +94,7 @@ function buildNavigationHTML($menuItems) {
         $html .= '</li>';
     }
     
+    $html .= '<li class="menu-item"><a href="blog.php" class="item-link">Blog</a></li>';
     $html .= '<li class="menu-item"><a href="contact.php" class="item-link">Contact Us</a></li>';
     
     return $html;

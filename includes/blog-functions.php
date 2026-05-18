@@ -16,6 +16,9 @@ function blog_ensure_table(mysqli $conn)
             `title` varchar(255) NOT NULL,
             `slug` varchar(255) NOT NULL,
             `image` varchar(255) DEFAULT NULL,
+            `meta_title` varchar(255) DEFAULT NULL,
+            `meta_description` text DEFAULT NULL,
+            `meta_keywords` text DEFAULT NULL,
             `content` longtext NOT NULL,
             `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
             PRIMARY KEY (`id`),
@@ -23,6 +26,45 @@ function blog_ensure_table(mysqli $conn)
             KEY `idx_blogs_created_at` (`created_at`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
+
+    blog_ensure_column($conn, 'meta_title', "ALTER TABLE `blogs` ADD `meta_title` varchar(255) DEFAULT NULL AFTER `image`");
+    blog_ensure_column($conn, 'meta_description', "ALTER TABLE `blogs` ADD `meta_description` text DEFAULT NULL AFTER `meta_title`");
+    blog_ensure_column($conn, 'meta_keywords', "ALTER TABLE `blogs` ADD `meta_keywords` text DEFAULT NULL AFTER `meta_description`");
+}
+
+function blog_ensure_column(mysqli $conn, $column, $alterSql)
+{
+    $stmt = $conn->prepare("
+        SELECT COLUMN_NAME
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+        AND TABLE_NAME = 'blogs'
+        AND COLUMN_NAME = ?
+        LIMIT 1
+    ");
+    $stmt->bind_param('s', $column);
+    $stmt->execute();
+    $exists = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    if (!$exists) {
+        $conn->query($alterSql);
+    }
+}
+
+function blog_normalize_keywords($keywords)
+{
+    $parts = preg_split('/[\r\n,]+/', (string) $keywords);
+    $clean = [];
+
+    foreach ($parts as $part) {
+        $keyword = trim($part);
+        if ($keyword !== '') {
+            $clean[] = $keyword;
+        }
+    }
+
+    return implode(', ', array_unique($clean));
 }
 
 function blog_slugify($title)

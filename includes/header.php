@@ -300,6 +300,7 @@ if ($isLoggedIn) {
                             echo '<li class="menu-item"><a href="./" class="item-link">Home</a></li>';
                             echo '<li class="menu-item"><a href="about-us.php" class="item-link">About Us</a></li>';
                             echo '<li class="menu-item"><a href="shop.php" class="item-link">Shop</a></li>';
+                            echo '<li class="menu-item"><a href="blog.php" class="item-link">Blog</a></li>';
                             echo '<li class="menu-item"><a href="contact.php" class="item-link">Contact Us</a></li>';
                         }
                         ?>

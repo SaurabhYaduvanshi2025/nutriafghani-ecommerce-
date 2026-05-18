@@ -113,6 +113,11 @@
             </a>
           </li>          
           <li class="nav-mb-item">
+            <a href="blog.php" class="mb-menu-link">
+              <span>Blog</span>
+            </a>
+          </li>
+          <li class="nav-mb-item">
             <a href="#" class="mb-menu-link">
               <span>Gifting</span>
             </a>
