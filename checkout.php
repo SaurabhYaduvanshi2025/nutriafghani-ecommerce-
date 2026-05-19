@@ -1,5 +1,6 @@
 <?php
 require_once('includes/customer-auth.php');
+require_once('config/env.php');
 
 // Require customer login
 require_customer_login('checkout.php');
@@ -265,6 +266,12 @@ require_customer_login('checkout.php');
     <!-- /wishlist -->
 
     <script>
+        const RAZORPAY_CONFIG = {
+            key: <?php echo json_encode(RAZORPAY_KEY_ID); ?>,
+            currency: <?php echo json_encode(RAZORPAY_CURRENCY); ?>,
+            businessName: <?php echo json_encode(RAZORPAY_BUSINESS_NAME); ?>
+        };
+
         document.addEventListener('DOMContentLoaded', function() {
             loadCheckoutCart();
         });
@@ -492,10 +499,10 @@ require_customer_login('checkout.php');
             }
 
             const options = {
-                key: 'rzp_test_1DP5MMOk9ganti', // Replace with your Razorpay key
+                key: RAZORPAY_CONFIG.key,
                 amount: amount,
-                currency: 'INR',
-                name: 'Nutri Afghan',
+                currency: RAZORPAY_CONFIG.currency,
+                name: RAZORPAY_CONFIG.businessName,
                 description: 'Order Payment',
                 prefill: {
                     name: firstName,
@@ -513,6 +520,13 @@ require_customer_login('checkout.php');
                     }
                 }
             };
+
+            if (!options.key) {
+                alert('Razorpay key is missing. Please add RAZORPAY_KEY_ID in the .env file.');
+                document.getElementById('btn-payment').disabled = false;
+                document.getElementById('btn-payment').textContent = 'Proceed to Payment';
+                return;
+            }
 
             if (razorpayOrderId) {
                 options.order_id = razorpayOrderId;

@@ -127,6 +127,11 @@
               <span>Contact Us</span>
             </a>
           </li>
+          <li class="nav-mb-item">
+            <a href="my-orders.php" class="mb-menu-link">
+              <span>My Orders</span>
+            </a>
+          </li>
         </ul>
       </div>
       <div class="mb-other-content">

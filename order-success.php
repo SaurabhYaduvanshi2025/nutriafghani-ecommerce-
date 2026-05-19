@@ -101,6 +101,7 @@ require_customer_login('order-success.php');
 
                             <div style="margin-top: 40px;">
                                 <a href="shop.php" class="tf-btn btn-fill" style="margin-right: 10px;">Continue Shopping</a>
+                                <a href="my-orders.php<?php echo isset($_GET['order_id']) ? '?order_id=' . (int) $_GET['order_id'] : ''; ?>" class="tf-btn btn-white" style="margin-right: 10px;">View Order</a>
                                 <a href="./" class="tf-btn btn-white">Back to Home</a>
                             </div>
                         </div>

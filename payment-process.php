@@ -5,6 +5,7 @@
  */
 
 require_once('config/db.php');
+require_once('config/env.php');
 require_once('includes/customer-auth.php');
 
 // Require customer login
@@ -221,7 +222,7 @@ try {
                 throw new Exception('Missing payment verification details');
             }
 
-            if ($razorpayOrderId && $razorpaySignature && defined('RAZORPAY_KEY_SECRET') && RAZORPAY_KEY_SECRET !== '') {
+            if ($razorpayOrderId && $razorpaySignature && RAZORPAY_KEY_SECRET !== '') {
                 $generatedSignature = hash_hmac('sha256', $razorpayOrderId . "|" . $razorpayPaymentId, RAZORPAY_KEY_SECRET);
 
                 if (!hash_equals($generatedSignature, $razorpaySignature)) {

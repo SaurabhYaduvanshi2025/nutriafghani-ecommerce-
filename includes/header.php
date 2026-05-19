@@ -225,6 +225,7 @@ if ($isLoggedIn) {
                                         <div class="sub-top">
                                             <p class="body-text-" style="margin-bottom: 10px;">Welcome, <strong><?php echo $customerName; ?></strong></p>
                                             <p class="text-secondary-2" style="font-size: 12px; margin-bottom: 15px;"><?php echo $customerEmail; ?></p>
+                                            <a href="my-orders.php" class="tf-btn btn-reset" style="margin-bottom: 10px;">My Orders</a>
                                             <a href="customer-logout.php" class="tf-btn btn-reset" style="color: #dc3545;">Logout</a>
                                         </div>
                                     <?php else: ?>

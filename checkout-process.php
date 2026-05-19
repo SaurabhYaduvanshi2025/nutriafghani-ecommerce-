@@ -196,7 +196,7 @@ try {
 
         foreach ($cartItems as $item) {
             // Insert order item
-            $orderItemStmt->bind_param("iiidi", $orderId, $item['product_id'], $item['variant_id'], $item['quantity'], $item['price']);
+            $orderItemStmt->bind_param("iiiid", $orderId, $item['product_id'], $item['variant_id'], $item['quantity'], $item['price']);
             $orderItemStmt->execute();
 
             // Reduce stock

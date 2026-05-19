@@ -77,6 +77,82 @@ function ensure_ecommerce_tables_exist($conn)
     }
 }
 
+function weight_multiplier_from_grams($weightGrams)
+{
+    if ($weightGrams <= 0) {
+        return 1;
+    }
+
+    return $weightGrams / 500;
+}
+
+function get_or_create_cart_variant($conn, $product, $weightLabel, $weightGrams)
+{
+    $weightLabel = trim((string) $weightLabel);
+    $weightGrams = (int) $weightGrams;
+
+    if ($weightLabel === '' || $weightGrams <= 0) {
+        return null;
+    }
+
+    $variantStmt = $conn->prepare("
+        SELECT id, variant_price, variant_discount_price, stock_quantity
+        FROM product_variants
+        WHERE product_id = ? AND weight_grams = ? AND is_active = 1
+        LIMIT 1
+    ");
+    $variantStmt->bind_param("ii", $product['id'], $weightGrams);
+    $variantStmt->execute();
+    $variant = $variantStmt->get_result()->fetch_assoc();
+    $variantStmt->close();
+
+    if ($variant) {
+        return $variant;
+    }
+
+    $multiplier = weight_multiplier_from_grams($weightGrams);
+    $variantPrice = round((float) $product['original_price'] * $multiplier, 2);
+    $baseDiscount = (float) ($product['discount_price'] ?: $product['original_price']);
+    $variantDiscountPrice = round($baseDiscount * $multiplier, 2);
+    $variantSku = !empty($product['sku']) ? $product['sku'] . '-' . strtoupper(str_replace(' ', '', $weightLabel)) : '';
+    $stockQuantity = (int) $product['stock_quantity'];
+
+    $insertVariant = $conn->prepare("
+        INSERT INTO product_variants (
+            product_id,
+            weight_label,
+            weight_value,
+            weight_grams,
+            variant_price,
+            variant_discount_price,
+            variant_sku,
+            stock_quantity,
+            is_active
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
+    ");
+    $insertVariant->bind_param(
+        "issiddsi",
+        $product['id'],
+        $weightLabel,
+        $weightLabel,
+        $weightGrams,
+        $variantPrice,
+        $variantDiscountPrice,
+        $variantSku,
+        $stockQuantity
+    );
+    $insertVariant->execute();
+    $variantId = $insertVariant->insert_id;
+    $insertVariant->close();
+
+    return [
+        'id' => $variantId,
+        'variant_discount_price' => $variantDiscountPrice,
+        'variant_price' => $variantPrice,
+        'stock_quantity' => $stockQuantity,
+    ];
+}
+
 try {
     ensure_ecommerce_tables_exist($conn);
     $customerId = get_customer_id();
@@ -105,7 +181,7 @@ try {
                 }
 
                 // Check if product exists and is active
-                $productQuery = "SELECT id, stock_quantity FROM products WHERE id = ? AND is_active = 1";
+                $productQuery = "SELECT id, original_price, discount_price, sku, stock_quantity FROM products WHERE id = ? AND is_active = 1";
                 $productStmt = $conn->prepare($productQuery);
                 $productStmt->bind_param("i", $productId);
                 $productStmt->execute();
@@ -125,9 +201,24 @@ try {
 
                 // Get price
                 $price = 0;
-                if ($variantId) {
+                if (!$variantId && !empty($_POST['weight_label']) && !empty($_POST['weight_grams'])) {
+                    $variant = get_or_create_cart_variant(
+                        $conn,
+                        $product,
+                        $_POST['weight_label'],
+                        (int) $_POST['weight_grams']
+                    );
+
+                    if ($variant) {
+                        $variantId = (int) $variant['id'];
+                        $price = (float) ($variant['variant_discount_price'] ?: $variant['variant_price']);
+                        $availableStock = min($availableStock, (int) $variant['stock_quantity']);
+                    }
+                }
+
+                if ($variantId && $price <= 0) {
                     // Get variant price
-                    $variantQuery = "SELECT variant_discount_price, stock_quantity FROM product_variants WHERE id = ? AND product_id = ? AND is_active = 1";
+                    $variantQuery = "SELECT variant_price, variant_discount_price, stock_quantity FROM product_variants WHERE id = ? AND product_id = ? AND is_active = 1";
                     $variantStmt = $conn->prepare($variantQuery);
                     $variantStmt->bind_param("ii", $variantId, $productId);
                     $variantStmt->execute();
@@ -138,17 +229,17 @@ try {
                     }
 
                     $variant = $variantResult->fetch_assoc();
-                    $price = $variant['variant_discount_price'];
+                    $price = $variant['variant_discount_price'] ?: $variant['variant_price'];
                     $availableStock = min($availableStock, $variant['stock_quantity']);
-                } else {
+                } elseif (!$variantId) {
                     // Get base product price
-                    $priceQuery = "SELECT discount_price FROM products WHERE id = ?";
+                    $priceQuery = "SELECT original_price, discount_price FROM products WHERE id = ?";
                     $priceStmt = $conn->prepare($priceQuery);
                     $priceStmt->bind_param("i", $productId);
                     $priceStmt->execute();
                     $priceResult = $priceStmt->get_result();
                     $priceData = $priceResult->fetch_assoc();
-                    $price = $priceData['discount_price'];
+                    $price = $priceData['discount_price'] ?: $priceData['original_price'];
                 }
 
                 if ($availableStock < $quantity) {

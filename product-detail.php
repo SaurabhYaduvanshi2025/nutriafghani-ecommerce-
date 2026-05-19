@@ -295,6 +295,7 @@ $shortDescription = trim((string) ($product['short_description'] ?? ''));
                                                             data-value="<?php echo e($variantLabel); ?>"
                                                             data-price="<?php echo e($variantDiscount); ?>"
                                                             data-original-price="<?php echo e($variantOriginal); ?>"
+                                                            data-variant-id="<?php echo (int) $variant['id']; ?>"
                                                             data-weight-grams="<?php echo (int) $variant['weight_grams']; ?>">
                                                             <span class="text-title"><?php echo e($variantLabel); ?></span>
                                                         </label>
@@ -639,6 +640,7 @@ $shortDescription = trim((string) ($product['short_description'] ?? ''));
         function getSelectedCartPayload() {
             const selectedVariant = document.querySelector('input[name="product_variant"]:checked');
             const variantId = selectedVariant ? selectedVariant.value : null;
+            const selectedVariantLabel = selectedVariant ? document.querySelector(`label[for="${selectedVariant.id}"]`) : null;
             const quantityInput = document.querySelector('.quantity-product');
             const quantity = quantityInput ? parseInt(quantityInput.value, 10) || 1 : 1;
 
@@ -647,6 +649,9 @@ $shortDescription = trim((string) ($product['short_description'] ?? ''));
             formData.append('product_id', '<?php echo (int) $product['id']; ?>');
             if (variantId && variantId !== '0') {
                 formData.append('variant_id', variantId);
+            } else if (selectedVariantLabel) {
+                formData.append('weight_label', selectedVariantLabel.dataset.value || '');
+                formData.append('weight_grams', selectedVariantLabel.dataset.weightGrams || '');
             }
             formData.append('quantity', quantity);
 
