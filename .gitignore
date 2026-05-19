@@ -19,3 +19,5 @@ uploads/
 admin/
 #Configg folder
 configg/
+#env.example
+.env
