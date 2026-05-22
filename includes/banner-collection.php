@@ -19,7 +19,7 @@
                             </div>
                             <div class="info">
                                 <div><a href="product-detail.php" class="title text-title text-white link text-line-clamp-1">Dates</a></div>
-                                <span class="price text-button text-white">₹800.00</span>
+                                <!-- <span class="price text-button text-white">₹800.00</span> -->
                             </div>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                             </div>
                             <div class="info">
                                 <div><a href="product-detail.php" class="title text-title text-white link text-line-clamp-1">Honey</a></div>
-                                <span class="price text-button text-white">₹600.00</span>
+                                <!-- <span class="price text-button text-white">₹600.00</span> -->
                             </div>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                             </div>
                             <div class="info">
                                 <div><a href="product-detail.php" class="title text-title text-white link text-line-clamp-1">Pista</a></div>
-                                <span class="price text-button text-white">₹1000.00</span>
+                                <!-- <span class="price text-button text-white">₹1000.00</span> -->
                             </div>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                             </div>
                             <div class="info">
                                 <div><a href="product-detail.php" class="title text-title text-white link text-line-clamp-1">Elaichi</a></div>
-                                <span class="price text-button text-white">₹300.00</span>
+                                <!-- <span class="price text-button text-white">₹300.00</span> -->
                             </div>
                         </div>
                     </div>
@@ -95,7 +95,7 @@
                             </div>
                             <div class="info">
                                 <div><a href="product-detail.php" class="title text-title text-white link text-line-clamp-1">Cashew</a></div>
-                                <span class="price text-button text-white">₹500.00</span>
+                                   -->
                             </div>
                         </div>
                     </div>
@@ -114,7 +114,7 @@
                             </div>
                             <div class="info">
                                 <div><a href="product-detail.php" class="title text-title text-white link text-line-clamp-1">Dates</a></div>
-                                <span class="price text-button text-white">₹800.00</span>
+                                <!-- <span class="price text-button text-white">₹800.00</span> -->
                             </div>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                             </div>
                             <div class="info">
                                 <div><a href="product-detail.php" class="title text-title text-white link text-line-clamp-1">Honey</a></div>
-                                <span class="price text-button text-white">₹600.00</span>
+                                <!-- <span class="price text-button text-white">₹600.00</span> -->
                             </div>
                         </div>
                     </div>
@@ -152,7 +152,7 @@
                             </div>
                             <div class="info">
                                 <div><a href="product-detail.php" class="title text-title text-white link text-line-clamp-1">Pista</a></div>
-                                <span class="price text-button text-white">₹1000.00</span>
+                                <!-- <span class="price text-button text-white">₹1000.00</span> -->
                             </div>
                         </div>
                     </div>
@@ -171,7 +171,7 @@
                             </div>
                             <div class="info">
                                 <div><a href="product-detail.php" class="title text-title text-white link text-line-clamp-1">Elaichi</a></div>
-                                <span class="price text-button text-white">₹300.00</span>
+                                <!-- <span class="price text-button text-white">₹300.00</span> -->
                             </div>
                         </div>
                     </div>
@@ -190,7 +190,7 @@
                             </div>
                             <div class="info">
                                 <div><a href="product-detail.php" class="title text-title text-white link text-line-clamp-1">Cashew</a></div>
-                                <span class="price text-button text-white">₹500.00</span>
+                                <!-- <span class="price text-button text-white">₹500.00</span> -->
                             </div>
                         </div>
                     </div>
