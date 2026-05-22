@@ -1,3 +1,15 @@
+<?php
+$contactStatus = $_GET['status'] ?? '';
+$contactMessages = [
+    'sent' => ['type' => 'success', 'text' => 'Thank you. Your message has been sent successfully.'],
+    'missing' => ['type' => 'danger', 'text' => 'Please fill all required fields.'],
+    'invalid_email' => ['type' => 'danger', 'text' => 'Please enter a valid email address.'],
+    'invalid_mobile' => ['type' => 'danger', 'text' => 'Please enter a valid mobile number.'],
+    'error' => ['type' => 'danger', 'text' => 'Could not send your message right now. Please try again.'],
+    'invalid' => ['type' => 'danger', 'text' => 'Invalid request. Please try again.'],
+];
+$contactAlert = $contactMessages[$contactStatus] ?? null;
+?>
 <!doctype html>
 
 <html lang="en">
@@ -104,7 +116,12 @@
                     <h3 class="heading">Get In Touch</h3>
                     <p class="subheading">Use the form below to get in touch with the sales team</p>
                 </div>
-                <form id="contactform" action="https://themesflat.co/html/modave/contact/contact-process.php" method="post" class="form-leave-comment">
+                <?php if ($contactAlert): ?>
+                    <div class="alert alert-<?php echo htmlspecialchars($contactAlert['type']); ?>" role="alert">
+                        <?php echo htmlspecialchars($contactAlert['text']); ?>
+                    </div>
+                <?php endif; ?>
+                <form id="contactform" action="contact-process.php" method="post" class="form-leave-comment">
                     <div class="wrap">
                         <div class="cols">
                             <fieldset class="">
@@ -113,9 +130,9 @@
                             <fieldset class="">
                                 <input class="" type="email" placeholder="Your Email*" name="email" id="email" tabindex="2" value="" aria-required="true" required="">
                             </fieldset>
-                            <!-- <fieldset class="">
-                                <input class="" type="email" placeholder="Your Phone (Optional)" name="phone" id="phone" tabindex="2" value="" aria-required="true">
-                            </fieldset> -->
+                            <fieldset class="">
+                                <input class="" type="tel" placeholder="Your Mobile*" name="mobile" id="mobile" tabindex="2" value="" aria-required="true" required="">
+                            </fieldset>
                         </div>
                         <fieldset class="">
                             <textarea name="message" id="message" rows="4" placeholder="Your Message*" tabindex="2" aria-required="true" required=""></textarea>
