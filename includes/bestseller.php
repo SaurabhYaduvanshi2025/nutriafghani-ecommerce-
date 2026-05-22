@@ -1,5 +1,5 @@
 <?php
-// Fetch featured/bestseller products from database
+// Fetch products from database for the home bestseller section.
 require_once(__DIR__ . '/../config/db.php');
 
 function product_image_path($path)
@@ -21,8 +21,8 @@ $productsQuery = "
            c.name as category_name, c.slug as category_slug
     FROM products p
     LEFT JOIN categories c ON p.category_id = c.id
-    WHERE p.is_active = 1 AND p.is_featured = 1
-    ORDER BY p.created_at DESC
+    WHERE p.is_active = 1
+    ORDER BY p.is_featured DESC, p.created_at DESC
     LIMIT 8
 ";
 
@@ -108,7 +108,7 @@ if ($result = $conn->query($productsQuery)) {
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div class="col-12 text-center" style="padding: 40px; color: #999;">
-                        <p>No featured products available</p>
+                        <p>No products available</p>
                     </div>
                 <?php endif; ?>
             </div>
