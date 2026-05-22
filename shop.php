@@ -84,11 +84,26 @@ function render_product_card($product, $index = 0)
     <?php
 }
 
-$selectedCategory = isset($_GET['category']) ? trim($_GET['category']) : '';
+$searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';
+$selectedCategory = $searchTerm === '' && isset($_GET['category']) ? trim($_GET['category']) : '';
 $pageTitle = 'Products';
 $products = [];
+$productResult = null;
 
-if ($selectedCategory !== '') {
+if ($searchTerm !== '') {
+    $pageTitle = 'Search: ' . $searchTerm;
+    $likeSearch = '%' . $searchTerm . '%';
+    $productStmt = $conn->prepare("
+        SELECT p.*, c.name AS category_name
+        FROM products p
+        LEFT JOIN categories c ON c.id = p.category_id
+        WHERE p.is_active = 1 AND (p.name LIKE ? OR c.name LIKE ?)
+        ORDER BY p.created_at DESC
+    ");
+    $productStmt->bind_param('ss', $likeSearch, $likeSearch);
+    $productStmt->execute();
+    $productResult = $productStmt->get_result();
+} elseif ($selectedCategory !== '') {
     $categoryStmt = $conn->prepare("
         SELECT name
         FROM categories
@@ -115,9 +130,17 @@ if ($selectedCategory !== '') {
     } else {
         $selectedCategory = '';
     }
+} else {
+    $productResult = $conn->query("
+        SELECT p.*, c.name AS category_name
+        FROM products p
+        LEFT JOIN categories c ON c.id = p.category_id
+        WHERE p.is_active = 1
+        ORDER BY p.created_at DESC
+    ");
 }
 
-if ($selectedCategory === '') {
+if (!$productResult) {
     $productResult = $conn->query("
         SELECT p.*, c.name AS category_name
         FROM products p
