@@ -4,6 +4,7 @@ $isLoggedIn = is_customer_logged_in();
 $customerName = isset($_SESSION['customer_first_name']) ? htmlspecialchars($_SESSION['customer_first_name']) : '';
 $customerEmail = isset($_SESSION['customer_email']) ? htmlspecialchars($_SESSION['customer_email']) : '';
 $cartCount = 0;
+$wishlistCount = 0;
 
 if ($isLoggedIn) {
     $customerId = get_customer_id();
@@ -18,6 +19,31 @@ if ($isLoggedIn) {
                 $cartCount = intval($cartCountRow['count'] ?? 0);
             }
             $cartCountStmt->close();
+        }
+
+        $conn->query("
+            CREATE TABLE IF NOT EXISTS `wishlist_items` (
+                `id` INT AUTO_INCREMENT PRIMARY KEY,
+                `customer_id` INT NOT NULL,
+                `product_id` INT NOT NULL,
+                `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE CASCADE,
+                FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE CASCADE,
+                UNIQUE KEY `unique_wishlist_item` (`customer_id`, `product_id`),
+                INDEX `idx_wishlist_customer_id` (`customer_id`),
+                INDEX `idx_wishlist_product_id` (`product_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+        $wishlistCountStmt = $conn->prepare("SELECT COUNT(*) AS count FROM wishlist_items WHERE customer_id = ?");
+        if ($wishlistCountStmt) {
+            $wishlistCountStmt->bind_param("i", $customerId);
+            $wishlistCountStmt->execute();
+            $wishlistCountResult = $wishlistCountStmt->get_result();
+            if ($wishlistCountResult) {
+                $wishlistCountRow = $wishlistCountResult->fetch_assoc();
+                $wishlistCount = intval($wishlistCountRow['count'] ?? 0);
+            }
+            $wishlistCountStmt->close();
         }
     }
 }
@@ -242,7 +268,7 @@ if ($isLoggedIn) {
                                 </div>
                             </li>
                             <li class="nav-wishlist">
-                                <a href="#wishlist"  data-bs-toggle="modal" class="nav-icon-item">
+                                <a href="wishlist.php" class="nav-icon-item" aria-label="Wishlist">
                                     <svg
                                         class="icon"
                                         width="24"
@@ -257,6 +283,7 @@ if ($isLoggedIn) {
                                             stroke-linecap="round"
                                             stroke-linejoin="round" />
                                     </svg>
+                                    <span class="count-box" id="wishlist-count-box"><?php echo $wishlistCount; ?></span>
                                 </a>
                             </li>
                             <li class="nav-cart">

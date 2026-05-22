@@ -459,6 +459,9 @@
             $("#shoppingCart").modal("show");
         });
         $(".btn-icon-action.wishlist").click(function () {
+            if ($(this).data("product-id")) {
+                return;
+            }
             $("#wishlist").modal("show");
         });
 

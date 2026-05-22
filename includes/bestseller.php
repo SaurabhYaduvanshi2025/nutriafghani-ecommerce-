@@ -80,7 +80,14 @@ if ($result = $conn->query($productsQuery)) {
                                     <?php endif; ?>
                                 </a>
                                 <div class="list-product-btn">
-                                    <a href="#wishlist" data-bs-toggle="modal" class="box-icon wishlist btn-icon-action">
+                                    <a href="#"
+                                       class="box-icon wishlist btn-icon-action"
+                                       data-product-id="<?php echo (int) $product['id']; ?>"
+                                       data-product-name="<?php echo htmlspecialchars($product['name']); ?>"
+                                       data-product-slug="<?php echo htmlspecialchars($product['slug']); ?>"
+                                       data-product-image="<?php echo htmlspecialchars(product_image_path($product['main_image'])); ?>"
+                                       data-product-price="<?php echo htmlspecialchars($product['discount_price'] && $product['discount_price'] < $product['original_price'] ? $product['discount_price'] : $product['original_price']); ?>"
+                                       aria-label="Add <?php echo htmlspecialchars($product['name']); ?> to wishlist">
                                         <span class="icon icon-heart"></span>
                                         <span class="tooltip">Wishlist</span>
                                     </a>

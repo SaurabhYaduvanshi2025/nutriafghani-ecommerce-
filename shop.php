@@ -53,7 +53,14 @@ function render_product_card($product, $index = 0)
                 />
             </a>
             <div class="list-product-btn">
-                <a href="#wishlist" data-bs-toggle="modal" class="box-icon wishlist btn-icon-action">
+                <a href="#"
+                   class="box-icon wishlist btn-icon-action"
+                   data-product-id="<?php echo (int) $product['id']; ?>"
+                   data-product-name="<?php echo e($product['name']); ?>"
+                   data-product-slug="<?php echo e($product['slug']); ?>"
+                   data-product-image="<?php echo e($imagePath); ?>"
+                   data-product-price="<?php echo e($product['discount_price'] ?: $product['original_price']); ?>"
+                   aria-label="Add <?php echo e($product['name']); ?> to wishlist">
                     <span class="icon icon-heart"></span>
                     <span class="tooltip">Wishlist</span>
                 </a>

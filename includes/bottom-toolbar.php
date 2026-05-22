@@ -63,7 +63,7 @@
     </div>
 
     <div class="toolbar-item">
-        <a href="#wishlist" data-bs-toggle="modal">
+        <a href="wishlist.php">
             <div class="toolbar-icon">
                 <svg
                     class="icon"

@@ -321,7 +321,13 @@ $shortDescription = trim((string) ($product['short_description'] ?? ''));
                                                 </button>
                                                 <a
                                                     href="javascript:void(0);"
-                                                    class="box-icon hover-tooltip text-caption-2 wishlist btn-icon-action">
+                                                    class="box-icon hover-tooltip text-caption-2 wishlist btn-icon-action"
+                                                    data-product-id="<?php echo (int) $product['id']; ?>"
+                                                    data-product-name="<?php echo e($product['name']); ?>"
+                                                    data-product-slug="<?php echo e($product['slug']); ?>"
+                                                    data-product-image="<?php echo e($mainImage); ?>"
+                                                    data-product-price="<?php echo e($currentDiscountPrice); ?>"
+                                                    aria-label="Add <?php echo e($product['name']); ?> to wishlist">
                                                     <span class="icon icon-heart"></span>
                                                     <span class="tooltip text-caption-2">Wishlist</span>
                                                 </a>
