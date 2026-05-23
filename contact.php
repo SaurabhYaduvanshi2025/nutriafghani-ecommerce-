@@ -3,8 +3,11 @@ $contactStatus = $_GET['status'] ?? '';
 $contactMessages = [
     'sent' => ['type' => 'success', 'text' => 'Thank you. Your message has been sent successfully.'],
     'missing' => ['type' => 'danger', 'text' => 'Please fill all required fields.'],
+    'invalid_name' => ['type' => 'danger', 'text' => 'Please enter a valid name.'],
     'invalid_email' => ['type' => 'danger', 'text' => 'Please enter a valid email address.'],
     'invalid_mobile' => ['type' => 'danger', 'text' => 'Please enter a valid mobile number.'],
+    'invalid_message' => ['type' => 'danger', 'text' => 'Please enter a message between 10 and 1000 characters.'],
+    'too_long' => ['type' => 'danger', 'text' => 'One or more fields are too long. Please review your details.'],
     'error' => ['type' => 'danger', 'text' => 'Could not send your message right now. Please try again.'],
     'invalid' => ['type' => 'danger', 'text' => 'Invalid request. Please try again.'],
 ];
@@ -24,6 +27,24 @@ $contactAlert = $contactMessages[$contactStatus] ?? null;
   <?php
   include_once('includes/header-link.php');
   ?>
+  <style>
+    .contact-field .contact-error {
+      display: none;
+      margin-top: 6px;
+      color: #dc3545;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .contact-field.is-invalid input,
+    .contact-field.is-invalid textarea {
+      border-color: #dc3545;
+    }
+
+    .contact-field.is-invalid .contact-error {
+      display: block;
+    }
+  </style>
 </head>
 
 <body class="preload-wrapper popup-loader">
@@ -124,18 +145,22 @@ $contactAlert = $contactMessages[$contactStatus] ?? null;
                 <form id="contactform" action="contact-process.php" method="post" class="form-leave-comment">
                     <div class="wrap">
                         <div class="cols">
-                            <fieldset class="">
-                                <input class="" type="text" placeholder="Your Name*" name="name" id="name" tabindex="2" value="" aria-required="true" required="">
+                            <fieldset class="contact-field">
+                                <input class="" type="text" placeholder="Your Name*" name="name" id="name" tabindex="2" value="" aria-required="true" required minlength="2" maxlength="80" autocomplete="name">
+                                <div class="contact-error" data-error-for="name">Please enter your name, at least 2 characters.</div>
                             </fieldset>
-                            <fieldset class="">
-                                <input class="" type="email" placeholder="Your Email*" name="email" id="email" tabindex="2" value="" aria-required="true" required="">
+                            <fieldset class="contact-field">
+                                <input class="" type="email" placeholder="Your Email*" name="email" id="email" tabindex="2" value="" aria-required="true" required maxlength="150" autocomplete="email">
+                                <div class="contact-error" data-error-for="email">Please enter a valid email address.</div>
                             </fieldset>
-                            <fieldset class="">
-                                <input class="" type="tel" placeholder="Your Mobile*" name="mobile" id="mobile" tabindex="2" value="" aria-required="true" required="">
+                            <fieldset class="contact-field">
+                                <input class="" type="tel" placeholder="Your Mobile*" name="mobile" id="mobile" tabindex="2" value="" aria-required="true" required minlength="7" maxlength="20" pattern="[0-9+\-\s()]{7,20}" autocomplete="tel">
+                                <div class="contact-error" data-error-for="mobile">Please enter a valid mobile number.</div>
                             </fieldset>
                         </div>
-                        <fieldset class="">
-                            <textarea name="message" id="message" rows="4" placeholder="Your Message*" tabindex="2" aria-required="true" required=""></textarea>
+                        <fieldset class="contact-field">
+                            <textarea name="message" id="message" rows="4" placeholder="Your Message*" tabindex="2" aria-required="true" required minlength="10" maxlength="1000"></textarea>
+                            <div class="contact-error" data-error-for="message">Please enter a message between 10 and 1000 characters.</div>
                         </fieldset>
                     </div>
                     <div class="button-submit send-wrap">
@@ -200,5 +225,80 @@ $contactAlert = $contactMessages[$contactStatus] ?? null;
   <?php
   include_once('includes/footer-link.php');
   ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var form = document.getElementById('contactform');
+      if (!form) {
+        return;
+      }
+
+      var fields = {
+        name: {
+          element: document.getElementById('name'),
+          validate: function (value) {
+            return value.length >= 2 && value.length <= 80;
+          }
+        },
+        email: {
+          element: document.getElementById('email'),
+          validate: function (value) {
+            return value.length <= 150 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+          }
+        },
+        mobile: {
+          element: document.getElementById('mobile'),
+          validate: function (value) {
+            var digits = value.replace(/\D/g, '');
+            return /^[0-9+\-\s()]{7,20}$/.test(value) && digits.length >= 7 && digits.length <= 15;
+          }
+        },
+        message: {
+          element: document.getElementById('message'),
+          validate: function (value) {
+            return value.length >= 10 && value.length <= 1000;
+          }
+        }
+      };
+
+      function setFieldState(field, isValid) {
+        var wrapper = field.element.closest('.contact-field');
+        if (!wrapper) {
+          return;
+        }
+
+        wrapper.classList.toggle('is-invalid', !isValid);
+        field.element.setAttribute('aria-invalid', isValid ? 'false' : 'true');
+      }
+
+      function validateField(field) {
+        var value = field.element.value.trim();
+        var isValid = field.validate(value);
+        setFieldState(field, isValid);
+        return isValid;
+      }
+
+      Object.keys(fields).forEach(function (key) {
+        fields[key].element.addEventListener('input', function () {
+          validateField(fields[key]);
+        });
+      });
+
+      form.addEventListener('submit', function (event) {
+        var firstInvalid = null;
+        var isFormValid = Object.keys(fields).reduce(function (formValid, key) {
+          var isValid = validateField(fields[key]);
+          if (!isValid && !firstInvalid) {
+            firstInvalid = fields[key].element;
+          }
+          return formValid && isValid;
+        }, true);
+
+        if (!isFormValid) {
+          event.preventDefault();
+          firstInvalid.focus();
+        }
+      });
+    });
+  </script>
 </body>
 </html>

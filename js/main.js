@@ -1095,6 +1095,10 @@
     /* Contact Form
   ------------------------------------------------------------------------------------- */
     var ajaxContactForm = function () {
+        if (!$.fn.validate) {
+            return;
+        }
+
         $("#contactform").each(function () {
             $(this).validate({
                 submitHandler: function (form) {

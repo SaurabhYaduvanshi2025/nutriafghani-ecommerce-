@@ -102,9 +102,9 @@
                                         <li class="text-caption-1">
                                             <a href="faqs.php" class="footer-menu_item">FAQ's</a>
                                         </li>
-                                        <li class="text-caption-1">
+                                        <!-- <li class="text-caption-1">
                                             <a href="#" class="footer-menu_item">My Wishlist</a>
-                                        </li>
+                                        </li> -->
                                     </ul>
                                 </div>
                             </div>
