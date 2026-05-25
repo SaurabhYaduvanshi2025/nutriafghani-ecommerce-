@@ -32,8 +32,8 @@ function category_image_path($path)
 ?>
 <section class="flat-spacing-2 pb_0">
     <div class="container">
-        <div class="heading-section-2 wow fadeInUp">
-            <h3>Categories you might like</h3>
+        <div class="heading-section text-center wow fadeInUp">
+            <h3 class="heading">Categories you might like</h3>
             <a href="collection.php" class="btn-line">View All Collection</a>
         </div>
         <div class="flat-collection-circle wow fadeInUp" data-wow-delay="0.1s">
@@ -58,23 +58,29 @@ function category_image_path($path)
                         <?php foreach ($categories as $category): ?>
                             <!-- Category Item -->
                             <div class="swiper-slide">
-                                <div class="collection-circle hover-img">
-                                    <a href="shop.php?category=<?php echo urlencode($category['slug']); ?>" class="img-style">
-                                        <img
-                                            class="lazyload"
-                                            data-src="<?php echo htmlspecialchars(category_image_path($category['image'])); ?>"
-                                            src="<?php echo htmlspecialchars(category_image_path($category['image'])); ?>"
-                                            alt="<?php echo htmlspecialchars($category['name']); ?>"
-                                        />
-                                    </a>
-                                    <div class="collection-content text-center">
-                                        <div>
-                                            <a href="shop.php?category=<?php echo urlencode($category['slug']); ?>" class="cls-title">
-                                                <h6 class="text"><?php echo htmlspecialchars($category['name']); ?></h6>
-                                                <i class="icon icon-arrowUpRight"></i>
-                                            </a>
+                                <div class="card-product category-product-card">
+                                    <div class="card-product-wrapper">
+                                        <a href="shop.php?category=<?php echo urlencode($category['slug']); ?>" class="product-img">
+                                            <img
+                                                class="lazyload img-product"
+                                                data-src="<?php echo htmlspecialchars(category_image_path($category['image'])); ?>"
+                                                src="<?php echo htmlspecialchars(category_image_path($category['image'])); ?>"
+                                                alt="<?php echo htmlspecialchars($category['name']); ?>"
+                                            />
+                                            <img
+                                                class="lazyload img-hover"
+                                                data-src="<?php echo htmlspecialchars(category_image_path($category['image'])); ?>"
+                                                src="<?php echo htmlspecialchars(category_image_path($category['image'])); ?>"
+                                                alt="<?php echo htmlspecialchars($category['name']); ?>"
+                                            />
+                                        </a>
+                                        <div class="list-btn-main">
+                                            <a href="shop.php?category=<?php echo urlencode($category['slug']); ?>" class="btn-main-product">View Products</a>
                                         </div>
-                                        <div class="count text-secondary"><?php echo intval($category['product_count']); ?> items</div>
+                                    </div>
+                                    <div class="card-product-info text-center">
+                                        <a href="shop.php?category=<?php echo urlencode($category['slug']); ?>" class="title link"><?php echo htmlspecialchars($category['name']); ?></a>
+                                        <span class="price text-danger"><?php echo intval($category['product_count']); ?> items</span>
                                     </div>
                                 </div>
                             </div>

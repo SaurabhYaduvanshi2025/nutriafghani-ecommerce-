@@ -8122,6 +8122,23 @@ input.style-line-bottom::placeholder {
   animation-play-state: paused;
 }
 
+.category-product-card .card-product-wrapper {
+  aspect-ratio: 3 / 4;
+}
+.category-product-card .card-product-wrapper img {
+  object-fit: cover;
+}
+.category-product-card .card-product-info {
+  align-items: center;
+  gap: 4px;
+}
+.category-product-card .card-product-info .title {
+  min-height: 22px;
+}
+.category-product-card .list-btn-main .btn-main-product {
+  text-align: center;
+}
+
 @media (max-width: 991px) {
   .flat-collection-circle {
     padding-left: 44px;
