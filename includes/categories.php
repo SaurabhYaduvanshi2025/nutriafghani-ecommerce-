@@ -40,7 +40,7 @@ function category_image_path($path)
             <div
                 dir="ltr"
                 class="swiper tf-sw-collection"
-                data-preview="5"
+                data-preview="4"
                 data-tablet="3"
                 data-mobile="2"
                 data-space-lg="20"
@@ -49,6 +49,9 @@ function category_image_path($path)
                 data-pagination="1"
                 data-pagination-md="1"
                 data-pagination-lg="1"
+                data-loop="true"
+                data-auto-play="true"
+                data-delay="2500"
             >
                 <div class="swiper-wrapper">
                     <?php if (!empty($categories)): ?>
@@ -86,10 +89,10 @@ function category_image_path($path)
                 </div>
                 <div class="d-flex d-lg-none sw-pagination-collection sw-dots type-circle justify-content-center"></div>
             </div>
-            <div class="nav-prev-collection d-none d-lg-flex nav-sw style-line nav-sw-left">
+            <div class="nav-prev-collection d-flex nav-sw style-line nav-sw-left">
                 <i class="icon icon-arrLeft"></i>
             </div>
-            <div class="nav-next-collection d-none d-lg-flex nav-sw style-line nav-sw-right">
+            <div class="nav-next-collection d-flex nav-sw style-line nav-sw-right">
                 <i class="icon icon-arrRight"></i>
             </div>
         </div>

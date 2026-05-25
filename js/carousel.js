@@ -7,14 +7,13 @@ if ($(".tf-sw-top_bar").length > 0) {
   var play = tfSwTopbar.data("auto-play");
   var delay = tfSwTopbar.data("delay");
   var swiper = new Swiper(".tf-sw-top_bar", {
-    autoplay: {
+    autoplay: play ? {
       delay: delay,
       disableOnInteraction: false,
       pauseOnMouseEnter: true,
-    },
+    } : false,
     observer: true,
     observeParents: true,
-    autoplay: play,
     slidesPerView: preview,
     loop: loop,
     spaceBetween: spacing,
@@ -117,51 +116,67 @@ if ($(".tf-sw-effect").length > 0) {
 }
 
 if ($(".tf-sw-collection").length > 0) {
-  var tfSwCls = $(".tf-sw-collection");
-  var preview = tfSwCls.data("preview");
-  var tablet = tfSwCls.data("tablet");
-  var mobile = tfSwCls.data("mobile");
-  var mobileSm = tfSwCls.data("mobile-sm") !== undefined ? tfSwCls.data("mobile-sm") : mobile;
-  var spacingLg = tfSwCls.data("space-lg");
-  var spacingMd = tfSwCls.data("space-md");
-  var spacing = tfSwCls.data("space");
-  var loop = tfSwCls.data("loop");
-  var perGroup = tfSwCls.data("pagination") || 1;
-  var perGroupMd = tfSwCls.data("pagination-md") || 1;
-  var perGroupLg = tfSwCls.data("pagination-lg") || 1;
-  var swiper = new Swiper(".tf-sw-collection", {
-    slidesPerView: mobile,
-    spaceBetween: spacing,
-    speed: 1000,
-    pagination: {
-      el: ".sw-pagination-collection",
-      clickable: true,
-    },
-    observer: true,
-    observeParents: true,
-    slidesPerGroup: perGroup,
-    navigation: {
-      clickable: true,
-      nextEl: ".nav-next-collection",
-      prevEl: ".nav-prev-collection",
-    },
-    breakpoints: {
-      575: {
-        slidesPerView: mobileSm,
-        spaceBetween: spacing,
-        slidesPerGroup: perGroup,
+  $(".tf-sw-collection").each(function () {
+    var tfSwCls = $(this);
+    var preview = tfSwCls.data("preview");
+    var tablet = tfSwCls.data("tablet");
+    var mobile = tfSwCls.data("mobile");
+    var mobileSm = tfSwCls.data("mobile-sm") !== undefined ? tfSwCls.data("mobile-sm") : mobile;
+    var spacingLg = tfSwCls.data("space-lg");
+    var spacingMd = tfSwCls.data("space-md");
+    var spacing = tfSwCls.data("space");
+    var loop = tfSwCls.data("loop") || false;
+    var play = tfSwCls.data("auto-play") || false;
+    var delay = tfSwCls.data("delay") || 2500;
+    var speed = tfSwCls.data("speed") || 1000;
+    var perGroup = tfSwCls.data("pagination") || 1;
+    var perGroupMd = tfSwCls.data("pagination-md") || 1;
+    var perGroupLg = tfSwCls.data("pagination-lg") || 1;
+    var holder = tfSwCls.closest(".flat-collection-circle");
+    var pagination = holder.find(".sw-pagination-collection")[0];
+    var nextEl = holder.find(".nav-next-collection")[0];
+    var prevEl = holder.find(".nav-prev-collection")[0];
+
+    new Swiper(this, {
+      slidesPerView: mobile,
+      spaceBetween: spacing,
+      speed: speed,
+      loop: loop,
+      autoplay: play ? {
+        delay: delay,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      } : false,
+      pagination: {
+        el: pagination || ".sw-pagination-collection",
+        clickable: true,
       },
-      768: {
-        slidesPerView: tablet,
-        spaceBetween: spacingMd,
-        slidesPerGroup: perGroupMd,
+      observer: true,
+      observeParents: true,
+      slidesPerGroup: perGroup,
+      navigation: {
+        clickable: true,
+        nextEl: nextEl || ".nav-next-collection",
+        prevEl: prevEl || ".nav-prev-collection",
       },
-      1200: {
-        slidesPerView: preview,
-        spaceBetween: spacingLg,
-        slidesPerGroup: perGroupLg,
+      breakpoints: {
+        575: {
+          slidesPerView: mobileSm,
+          spaceBetween: spacing,
+          slidesPerGroup: perGroup,
+        },
+        768: {
+          slidesPerView: tablet,
+          spaceBetween: spacingMd,
+          slidesPerGroup: perGroupMd,
+        },
+        1200: {
+          slidesPerView: preview,
+          spaceBetween: spacingLg,
+          slidesPerGroup: perGroupLg,
+        },
       },
-    },
+    });
   });
 }
 

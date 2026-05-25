@@ -58,18 +58,6 @@
     ?>
     <!-- Best Seller -->
 
-    <!-- Shop by us -->
-    <?php
-    include_once('includes/shopBy.php');
-    ?>
-    <!-- /Shop by us -->
-
-    <!-- Banner collection -->
-    <?php
-    include_once('includes/banner-collection.php');
-    ?>
-    <!-- /Banner collection -->
-
     <!-- about-us -->
     <?php
     include_once('includes/about-us.php');

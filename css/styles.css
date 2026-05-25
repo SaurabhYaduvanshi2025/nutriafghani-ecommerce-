@@ -1643,9 +1643,32 @@ a:focus, a:hover {
 }
 .tf-topbar .navigation-topbar.nav-next-topbar {
   left: 0;
+  animation: topbarArrowLeft 1.4s ease-in-out infinite;
 }
 .tf-topbar .navigation-topbar.nav-prev-topbar {
   right: 0;
+  animation: topbarArrowRight 1.4s ease-in-out infinite;
+}
+.tf-topbar .navigation-topbar:hover {
+  animation-play-state: paused;
+}
+
+@keyframes topbarArrowLeft {
+  0%, 100% {
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    transform: translateY(-50%) translateX(-5px);
+  }
+}
+
+@keyframes topbarArrowRight {
+  0%, 100% {
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    transform: translateY(-50%) translateX(5px);
+  }
 }
 
 .header-default .wrapper-header {
@@ -8073,6 +8096,8 @@ input.style-line-bottom::placeholder {
 
 .flat-collection-circle {
   position: relative;
+  padding-left: 56px;
+  padding-right: 56px;
 }
 .flat-collection-circle .nav-sw {
   position: absolute;
@@ -8086,10 +8111,40 @@ input.style-line-bottom::placeholder {
   top: 38.5%;
 }
 .flat-collection-circle .nav-sw-left {
-  left: 0;
+  left: 8px;
+  animation: collectionArrowLeft 1.4s ease-in-out infinite;
 }
 .flat-collection-circle .nav-sw-right {
-  right: 0;
+  right: 8px;
+  animation: collectionArrowRight 1.4s ease-in-out infinite;
+}
+.flat-collection-circle .nav-sw:hover {
+  animation-play-state: paused;
+}
+
+@media (max-width: 991px) {
+  .flat-collection-circle {
+    padding-left: 44px;
+    padding-right: 44px;
+  }
+}
+
+@keyframes collectionArrowLeft {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-6px);
+  }
+}
+
+@keyframes collectionArrowRight {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(6px);
+  }
 }
 
 .list-collection {
@@ -16316,10 +16371,12 @@ ul.list-text.type-number {
     border-radius: 8px;
   }
   .flat-collection-circle .nav-sw-left {
-    margin-left: -22px;
+    left: 8px;
+    margin-left: 0;
   }
   .flat-collection-circle .nav-sw-right {
-    margin-right: -22px;
+    right: 8px;
+    margin-right: 0;
   }
   .nav-account .dropdown-account {
     min-width: 250px;
