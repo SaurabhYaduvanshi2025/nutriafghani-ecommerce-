@@ -17,6 +17,13 @@ if ($result = $conn->query($categoriesQuery)) {
     $categories = $result->fetch_all(MYSQLI_ASSOC);
 }
 
+$uniqueCategories = [];
+foreach ($categories as $category) {
+    $categoryKey = !empty($category['slug']) ? $category['slug'] : $category['id'];
+    $uniqueCategories[$categoryKey] = $category;
+}
+$categories = array_values($uniqueCategories);
+
 function category_image_path($path)
 {
     if (empty($path)) {
@@ -49,7 +56,7 @@ function category_image_path($path)
                 data-pagination="1"
                 data-pagination-md="1"
                 data-pagination-lg="1"
-                data-loop="true"
+                data-loop="false"
                 data-auto-play="true"
                 data-delay="2500"
             >
