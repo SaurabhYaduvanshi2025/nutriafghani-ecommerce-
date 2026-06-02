@@ -4,9 +4,9 @@ require_once(__DIR__ . '/../config/db.php');
 
 $categoriesQuery = "
     SELECT c.id, c.name, c.image, c.slug,
-           COUNT(p.id) as product_count
+           COUNT(DISTINCT p.id) as product_count
     FROM categories c
-    LEFT JOIN products p ON c.id = p.category_id
+    LEFT JOIN products p ON (p.category_id = c.id OR p.category_slug = c.slug) AND p.is_active = 1
     WHERE c.is_active = 1
     GROUP BY c.id
     ORDER BY c.name ASC

@@ -112,7 +112,7 @@ if ($searchTerm !== '') {
     $productResult = $productStmt->get_result();
 } elseif ($selectedCategory !== '') {
     $categoryStmt = $conn->prepare("
-        SELECT name
+        SELECT id, name
         FROM categories
         WHERE slug = ? AND is_active = 1
         LIMIT 1
@@ -128,10 +128,10 @@ if ($searchTerm !== '') {
             SELECT p.*, c.name AS category_name
             FROM products p
             LEFT JOIN categories c ON c.id = p.category_id
-            WHERE p.is_active = 1 AND c.slug = ?
+            WHERE p.is_active = 1 AND (p.category_id = ? OR p.category_slug = ?)
             ORDER BY p.created_at DESC
         ");
-        $productStmt->bind_param('s', $selectedCategory);
+        $productStmt->bind_param('is', $category['id'], $selectedCategory);
         $productStmt->execute();
         $productResult = $productStmt->get_result();
     } else {

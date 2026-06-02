@@ -21,9 +21,9 @@ function category_image_path($path)
 
 $categories = [];
 $categoriesQuery = "
-    SELECT c.id, c.name, c.slug, c.image, COUNT(p.id) AS product_count
+    SELECT c.id, c.name, c.slug, c.image, COUNT(DISTINCT p.id) AS product_count
     FROM categories c
-    LEFT JOIN products p ON p.category_id = c.id AND p.is_active = 1
+    LEFT JOIN products p ON (p.category_id = c.id OR p.category_slug = c.slug) AND p.is_active = 1
     WHERE c.is_active = 1
     GROUP BY c.id, c.name, c.slug, c.image
     ORDER BY c.name ASC
