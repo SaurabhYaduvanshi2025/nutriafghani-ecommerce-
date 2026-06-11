@@ -2,6 +2,8 @@
 require_once('config/db.php');
 require_once('includes/customer-auth.php');
 
+require_customer_login('wishlist.php');
+
 function e($value)
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
