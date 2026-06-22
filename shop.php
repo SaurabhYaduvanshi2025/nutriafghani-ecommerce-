@@ -89,6 +89,7 @@ function render_product_card($product, $index = 0)
 }
 
 $searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';
+$selectedMenu = $searchTerm === '' && isset($_GET['menu']) ? (int) $_GET['menu'] : 0;
 $pageTitle = 'Products';
 $products = [];
 $productResult = null;
@@ -105,6 +106,20 @@ if ($searchTerm !== '') {
     $productStmt->bind_param('ss', $likeSearch, $likeSearch);
     $productStmt->execute();
     $productResult = $productStmt->get_result();
+} elseif ($selectedMenu > 0) {
+    $menuStmt = $conn->prepare("SELECT label FROM menu_items WHERE id = ? AND is_active = 1 AND parent_id IS NULL AND menu_type = 'homepage' LIMIT 1");
+    $menuStmt->bind_param('i', $selectedMenu);
+    $menuStmt->execute();
+    $selectedMenuRow = $menuStmt->get_result()->fetch_assoc();
+    $menuStmt->close();
+
+    if ($selectedMenuRow) {
+        $pageTitle = $selectedMenuRow['label'];
+        $productStmt = $conn->prepare("SELECT p.* FROM products p WHERE p.is_active = 1 AND p.menu_id = ? ORDER BY p.is_featured DESC, p.created_at DESC");
+        $productStmt->bind_param('i', $selectedMenu);
+        $productStmt->execute();
+        $productResult = $productStmt->get_result();
+    }
 } else {
     $productResult = $conn->query("
         SELECT p.*

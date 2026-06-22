@@ -46,6 +46,10 @@
     ?>
     <!-- /certificate -->
 
+    <!-- Navigation menu covers -->
+    <?php include_once('includes/navigation-showcase.php'); ?>
+    <!-- /Navigation menu covers -->
+
     <!-- Best Seller -->
     <?php
     include_once('includes/bestseller.php');
