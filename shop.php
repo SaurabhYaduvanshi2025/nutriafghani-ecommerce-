@@ -75,9 +75,6 @@ function render_product_card($product, $index = 0)
         </div>
         <div class="card-product-info">
             <a href="<?php echo e($detailUrl); ?>" class="title link">
-                <?php if (!empty($product['category_name'])): ?>
-                    <?php echo e($product['category_name']); ?> - 
-                <?php endif; ?>
                 <?php echo e($product['name']); ?>
             </a>
             <div class="product-price-line">
@@ -92,7 +89,6 @@ function render_product_card($product, $index = 0)
 }
 
 $searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';
-$selectedCategory = $searchTerm === '' && isset($_GET['category']) ? trim($_GET['category']) : '';
 $pageTitle = 'Products';
 $products = [];
 $productResult = null;
@@ -101,47 +97,18 @@ if ($searchTerm !== '') {
     $pageTitle = 'Search: ' . $searchTerm;
     $likeSearch = '%' . $searchTerm . '%';
     $productStmt = $conn->prepare("
-        SELECT p.*, c.name AS category_name
+        SELECT p.*
         FROM products p
-        LEFT JOIN categories c ON c.id = p.category_id
-        WHERE p.is_active = 1 AND (p.name LIKE ? OR c.name LIKE ?)
+        WHERE p.is_active = 1 AND (p.name LIKE ? OR p.description LIKE ?)
         ORDER BY p.created_at DESC
     ");
     $productStmt->bind_param('ss', $likeSearch, $likeSearch);
     $productStmt->execute();
     $productResult = $productStmt->get_result();
-} elseif ($selectedCategory !== '') {
-    $categoryStmt = $conn->prepare("
-        SELECT id, name
-        FROM categories
-        WHERE slug = ? AND is_active = 1
-        LIMIT 1
-    ");
-    $categoryStmt->bind_param('s', $selectedCategory);
-    $categoryStmt->execute();
-    $categoryResult = $categoryStmt->get_result();
-    $category = $categoryResult->fetch_assoc();
-
-    if ($category) {
-        $pageTitle = $category['name'];
-        $productStmt = $conn->prepare("
-            SELECT p.*, c.name AS category_name
-            FROM products p
-            LEFT JOIN categories c ON c.id = p.category_id
-            WHERE p.is_active = 1 AND (p.category_id = ? OR p.category_slug = ?)
-            ORDER BY p.created_at DESC
-        ");
-        $productStmt->bind_param('is', $category['id'], $selectedCategory);
-        $productStmt->execute();
-        $productResult = $productStmt->get_result();
-    } else {
-        $selectedCategory = '';
-    }
 } else {
     $productResult = $conn->query("
-        SELECT p.*, c.name AS category_name
+        SELECT p.*
         FROM products p
-        LEFT JOIN categories c ON c.id = p.category_id
         WHERE p.is_active = 1
         ORDER BY p.created_at DESC
     ");
@@ -149,9 +116,8 @@ if ($searchTerm !== '') {
 
 if (!$productResult) {
     $productResult = $conn->query("
-        SELECT p.*, c.name AS category_name
+        SELECT p.*
         FROM products p
-        LEFT JOIN categories c ON c.id = p.category_id
         WHERE p.is_active = 1
         ORDER BY p.created_at DESC
     ");

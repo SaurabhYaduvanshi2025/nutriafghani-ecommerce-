@@ -59,9 +59,8 @@ $variants = [];
 if (!empty($productSlug)) {
     // Fetch product by slug
     $stmt = $conn->prepare("
-        SELECT p.*, c.name as category_name, c.slug as category_slug
+        SELECT p.*
         FROM products p
-        LEFT JOIN categories c ON p.category_id = c.id
         WHERE p.slug = ? AND p.is_active = 1
         LIMIT 1
     ");
@@ -72,9 +71,8 @@ if (!empty($productSlug)) {
 } elseif ($productId > 0) {
     // Fetch product by ID
     $stmt = $conn->prepare("
-        SELECT p.*, c.name as category_name, c.slug as category_slug
+        SELECT p.*
         FROM products p
-        LEFT JOIN categories c ON p.category_id = c.id
         WHERE p.id = ? AND p.is_active = 1
         LIMIT 1
     ");
@@ -195,7 +193,7 @@ $shortDescription = trim((string) ($product['short_description'] ?? ''));
                     <div class="tf-breadcrumb-list">
                         <a href="./" class="text text-caption-1">Homepage</a>
                         <i class="icon icon-arrRight"></i>
-                        <a href="shop.php<?php echo !empty($product['category_slug']) ? '?category=' . urlencode($product['category_slug']) : ''; ?>" class="text text-caption-1"><?php echo e($product['category_name'] ?: 'Products'); ?></a>
+                        <a href="shop.php" class="text text-caption-1">Products</a>
                         <i class="icon icon-arrRight"></i>
                         <span class="text text-caption-1"><?php echo e($product['name']); ?></span>
                     </div>
@@ -252,7 +250,7 @@ $shortDescription = trim((string) ($product['short_description'] ?? ''));
                                 <div class="tf-product-info-list other-image-zoom ms-0">
                                     <div class="tf-product-info-heading">
                                         <div class="tf-product-info-name">
-                                            <div class="text text-btn-uppercase"><?php echo e($product['category_name'] ?: 'Product'); ?></div>
+                                            <div class="text text-btn-uppercase">Product</div>
                                             <h3 class="name"><?php echo e($product['name']); ?></h3>
                                         </div>
                                         <div class="tf-product-info-desc">
@@ -458,7 +456,7 @@ $shortDescription = trim((string) ($product['short_description'] ?? ''));
                                                         <?php if (!empty($product['sku'])): ?>
                                                             <li>SKU: <?php echo e($product['sku']); ?></li>
                                                         <?php endif; ?>
-                                                        <li>Category: <?php echo e($product['category_name'] ?: 'Product'); ?></li>
+                                                        <li>Product: <?php echo e($product['name']); ?></li>
                                                         <li>Stock: <?php echo (int) $product['stock_quantity']; ?> available</li>
                                                         <?php if (!empty($variants)): ?>
                                                             <li>Available weights: <?php echo e(implode(', ', array_map('variant_display_label', $variants))); ?></li>

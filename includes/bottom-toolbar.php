@@ -37,7 +37,7 @@
                     />
                 </svg>
             </div>
-            <div class="toolbar-label">Categories</div>
+            <div class="toolbar-label">Products</div>
         </a>
     </div>
 

@@ -46,12 +46,6 @@
     ?>
     <!-- /certificate -->
 
-    <!-- collection -->
-    <?php
-    include_once('includes/categories.php');
-    ?>
-    <!-- /collection -->
-     
     <!-- Best Seller -->
     <?php
     include_once('includes/bestseller.php');

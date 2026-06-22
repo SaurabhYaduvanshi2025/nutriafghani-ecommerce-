@@ -52,7 +52,7 @@ try {
 
     // Verify tables exist
     echo "<h3>Verifying Tables:</h3>";
-    $tables = ['categories', 'products', 'product_variants', 'customers', 'cart_items', 'orders', 'order_items'];
+    $tables = ['menu_items', 'products', 'product_variants', 'customers', 'cart_items', 'orders', 'order_items'];
 
     foreach ($tables as $table) {
         $result = $conn->query("SHOW TABLES LIKE '$table'");

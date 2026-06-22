@@ -9,7 +9,7 @@
                 <fieldset class="text">
                     <input
                         type="text"
-                        placeholder="Search products or categories..."
+                        placeholder="Search products..."
                         class=""
                         name="search"
                         id="siteSearchInput"
@@ -42,7 +42,6 @@
                 </button>
             </form>
             <div class="search-results-wrap" id="siteSearchResults" style="display: none;">
-                <div class="search-result-group" id="siteSearchCategories"></div>
                 <div class="search-result-group" id="siteSearchProducts"></div>
             </div>
             <div>
@@ -117,10 +116,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     const input = document.getElementById('siteSearchInput');
     const resultsWrap = document.getElementById('siteSearchResults');
-    const categoryBox = document.getElementById('siteSearchCategories');
     const productBox = document.getElementById('siteSearchProducts');
 
-    if (!input || !resultsWrap || !categoryBox || !productBox) {
+    if (!input || !resultsWrap || !productBox) {
         return;
     }
 
@@ -160,7 +158,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function clearResults() {
-        categoryBox.innerHTML = '';
         productBox.innerHTML = '';
         resultsWrap.style.display = 'none';
     }
@@ -187,19 +184,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(function (data) {
-                const categories = Array.isArray(data.categories) ? data.categories : [];
                 const products = Array.isArray(data.products) ? data.products : [];
 
-                categoryBox.innerHTML = renderGroup('Categories', categories, function (item) {
-                    return item.count + (Number(item.count) === 1 ? ' item' : ' items');
-                });
                 productBox.innerHTML = renderGroup('Products', products, function (item) {
                     return (item.category ? item.category + ' - ' : '') + item.price;
                 });
 
-                resultsWrap.style.display = categories.length || products.length ? 'grid' : 'block';
-                if (!categories.length && !products.length) {
-                    productBox.innerHTML = '<p class="text-secondary">No products or categories found.</p>';
+                resultsWrap.style.display = products.length ? 'grid' : 'block';
+                if (!products.length) {
+                    productBox.innerHTML = '<p class="text-secondary">No products found.</p>';
                 }
             })
             .catch(function (error) {

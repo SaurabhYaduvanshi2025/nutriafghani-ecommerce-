@@ -17,10 +17,8 @@ function product_image_path($path)
 
 $productsQuery = "
     SELECT p.id, p.name, p.slug, p.short_description, p.original_price, p.discount_price,
-           p.main_image, p.gallery_image_1, p.gallery_image_2, p.gallery_image_3, p.stock_quantity, p.is_featured,
-           c.name as category_name, c.slug as category_slug
+           p.main_image, p.gallery_image_1, p.gallery_image_2, p.gallery_image_3, p.stock_quantity, p.is_featured
     FROM products p
-    LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.is_active = 1
     ORDER BY p.is_featured DESC, p.created_at DESC
     LIMIT 8

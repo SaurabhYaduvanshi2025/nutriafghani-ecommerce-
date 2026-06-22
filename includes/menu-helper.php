@@ -25,23 +25,23 @@ function getNavigationMenu($conn) {
 
             if (!empty($menuIds)) {
                 $menuIdList = implode(',', $menuIds);
-                $categoryResult = $conn->query("
+                $productResult = $conn->query("
                     SELECT id, menu_id, name, slug
-                    FROM categories
+                    FROM products
                     WHERE is_active = 1
                     AND menu_id IN ($menuIdList)
                     ORDER BY name ASC
                 ");
-                $categoriesByMenu = [];
+                $productsByMenu = [];
 
-                if ($categoryResult) {
-                    while ($category = $categoryResult->fetch_assoc()) {
-                        $categoriesByMenu[(int) $category['menu_id']][] = $category;
+                if ($productResult) {
+                    while ($product = $productResult->fetch_assoc()) {
+                        $productsByMenu[(int) $product['menu_id']][] = $product;
                     }
                 }
 
                 foreach ($menus as &$menu) {
-                    $menu['categories'] = $categoriesByMenu[(int) $menu['id']] ?? [];
+                    $menu['products'] = $productsByMenu[(int) $menu['id']] ?? [];
                 }
                 unset($menu);
             }
@@ -70,22 +70,22 @@ function buildNavigationHTML($menuItems) {
             continue;
         }
         
-        $categories = isset($mainItem['categories']) && is_array($mainItem['categories']) ? $mainItem['categories'] : [];
-        $hasCategories = count($categories) > 0;
-        $url = $hasCategories ? '#' : ($mainItem['url'] ? $mainItem['url'] : '#');
-        $html .= '<li class="menu-item' . ($hasCategories ? ' position-relative' : '') . '">';
+        $products = isset($mainItem['products']) && is_array($mainItem['products']) ? $mainItem['products'] : [];
+        $hasProducts = count($products) > 0;
+        $url = $hasProducts ? '#' : ($mainItem['url'] ? $mainItem['url'] : '#');
+        $html .= '<li class="menu-item' . ($hasProducts ? ' position-relative' : '') . '">';
         $html .= '<a href="' . htmlspecialchars($url) . '" class="item-link">';
         $html .= htmlspecialchars($label);
-        if ($hasCategories) {
+        if ($hasProducts) {
             $html .= '<i class="icon icon-arrow-down"></i>';
         }
         $html .= '</a>';
-        if ($hasCategories) {
+        if ($hasProducts) {
             $html .= '<div class="sub-menu submenu-default">';
             $html .= '<ul class="menu-list">';
-            foreach ($categories as $category) {
-                $html .= '<li><a href="shop.php?category=' . urlencode($category['slug']) . '" class="menu-link-text">';
-                $html .= htmlspecialchars($category['name']);
+            foreach ($products as $product) {
+                $html .= '<li><a href="product-detail.php?slug=' . urlencode($product['slug']) . '" class="menu-link-text">';
+                $html .= htmlspecialchars($product['name']);
                 $html .= '</a></li>';
             }
             $html .= '</ul>';

@@ -3,21 +3,21 @@ if (!isset($conn) || !($conn instanceof mysqli)) {
     require_once(__DIR__ . '/../config/db.php');
 }
 
-$footerCategories = [];
+$footerProducts = [];
 try {
-    $footerCategoryQuery = "
+    $footerProductQuery = "
         SELECT name, slug
-        FROM categories
+        FROM products
         WHERE is_active = 1
-        ORDER BY name ASC
+        ORDER BY is_featured DESC, name ASC
         LIMIT 8
     ";
 
-    if ($footerCategoryResult = $conn->query($footerCategoryQuery)) {
-        $footerCategories = $footerCategoryResult->fetch_all(MYSQLI_ASSOC);
+    if ($footerProductResult = $conn->query($footerProductQuery)) {
+        $footerProducts = $footerProductResult->fetch_all(MYSQLI_ASSOC);
     }
 } catch (Throwable $exception) {
-    error_log('Footer category load error: ' . $exception->getMessage());
+    error_log('Footer product load error: ' . $exception->getMessage());
 }
 ?>
 <footer id="footer" class="footer mt-4">
@@ -69,16 +69,16 @@ try {
                     <div class="col-lg-4">
                         <div class="footer-menu">
                             <div class="footer-col-block">
-                                <div class="footer-heading text-button footer-heading-mobile">Categories</div>
+                                <div class="footer-heading text-button footer-heading-mobile">Products</div>
                                 <div class="tf-collapse-content">
                                     <ul class="footer-menu-list">
-                                        <?php foreach ($footerCategories as $footerCategory): ?>
+                                        <?php foreach ($footerProducts as $footerProduct): ?>
                                             <li class="text-caption-1">
-                                                <a href="shop.php?category=<?php echo urlencode($footerCategory['slug']); ?>" class="footer-menu_item"><?php echo htmlspecialchars($footerCategory['name'], ENT_QUOTES, 'UTF-8'); ?></a>
+                                                <a href="product-detail.php?slug=<?php echo urlencode($footerProduct['slug']); ?>" class="footer-menu_item"><?php echo htmlspecialchars($footerProduct['name'], ENT_QUOTES, 'UTF-8'); ?></a>
                                             </li>
                                         <?php endforeach; ?>
                                         <li class="text-caption-1">
-                                            <a href="collection.php" class="footer-menu_item">View All Categories</a>
+                                            <a href="shop.php" class="footer-menu_item">View All Products</a>
                                         </li>
                                     </ul>
                                 </div>
